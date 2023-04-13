@@ -1,3 +1,4 @@
 django
 djangorestframework
 dr-buster
+drf_yasg

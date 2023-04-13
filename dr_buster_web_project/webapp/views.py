@@ -7,14 +7,19 @@ from webapp.models import Scan, Wordlist
 
 @api_view(['POST'])
 def dr_buster_start_scan(request):
+    '''
+        Starts a new scan, returns id of a saved scan that you can use in get_result
+        parameters:
+        - wordlist_id: wordlist id that you got after uploading new wordlist
+        - url: url that you want to scan
+    '''
     # Get the parameters from the request
-    wordlist_path = request.data.get('wordlist_name')
+    wordlist_id = request.data.get('wordlist_id')
     target_url = request.data.get('url')
-
     
-    # generate task id
-    # TODO: use celery
-    
+    wordlist = Wordlist.objects.get(id=wordlist_id)
+    # create wordlist on path start stan rm from path
+    wordlist_path = "" 
     # Run dr_buster with the given parameters
     report_path = dr_buster_scan(wordlist_path, target_url, cli_run=False)
     lines = open(report_path).readlines()
@@ -35,7 +40,13 @@ def dr_buster_start_scan(request):
 @api_view(['POST'])
 def upload_wordlist(request):
     '''
-      usage: curl -X POST -H "Authorization: Token <your_token>" -F "file=@/path/to/wordlist.txt" http://localhost:8000/upload_wordlist/
+        Upload a new wordlist to service
+        CLI usage: curl -X POST -F "file=@/path/to/wordlist.txt" http://localhost:8000/upload_wordlist/
+        parameters:
+        - file: file
+        description: file that you want to upload
+        required: true
+        type: file
     '''
 
     file = request.FILES.get('file')
@@ -50,6 +61,9 @@ def upload_wordlist(request):
 
 @api_view(['GET'])
 def get_available_wordlists(request):
+    '''
+        Fetch all used wordlists
+    '''
     wordlists = Wordlist.objects.all()
     data = serializers.serialize('json', wordlists)
     return Response(data)
@@ -58,7 +72,11 @@ def get_available_wordlists(request):
 @api_view(['GET'])
 def get_result(request):
     '''
-        provide a scan_id in request to fetch result of that scan
+        Fetch results of a scan 
+        - scan_id: scan_id
+        description: UUID of a scan that you want to fetch for
+        required: true
+        type: UUID
     '''
     scan_id = request.data.get('scan_id')
     scan = Scan.objects.query(id=scan_id)

@@ -1,3 +1,5 @@
 .vscode/
 env/
 .db*
+migrations/
+__pycache__/
