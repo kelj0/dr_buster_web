@@ -3,6 +3,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from dr_buster.core import main as dr_buster_scan
 from webapp.models import Scan, Wordlist
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 
 @api_view(['POST'])
@@ -69,16 +71,24 @@ def get_available_wordlists(request):
     return Response(data)
 
 
+@swagger_auto_schema(
+    method='get',
+    manual_parameters=[
+        openapi.Parameter(
+            name='scan_id',
+            in_=openapi.IN_QUERY,
+            type=openapi.TYPE_STRING,
+            required=True,
+            description='ID of the scan',
+        )
+    ]
+)
 @api_view(['GET'])
 def get_result(request):
     '''
         Fetch results of a scan 
-        - scan_id: scan_id
-        description: UUID of a scan that you want to fetch for
-        required: true
-        type: UUID
     '''
-    scan_id = request.data.get('scan_id')
+    scan_id = request.query.get('scan_id')
     scan = Scan.objects.query(id=scan_id)
     if scan:
         data = serializers.serialize('json', scan.result)
