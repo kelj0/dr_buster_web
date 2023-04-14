@@ -3,3 +3,4 @@ env/
 .db*
 migrations/
 __pycache__/
+*.sqlite3
