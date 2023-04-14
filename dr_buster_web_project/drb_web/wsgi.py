@@ -1,5 +1,5 @@
 """
-WSGI config for dr_buster_web_project project.
+WSGI config for drb_web project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dr_buster_web_project.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'drb_web.settings')
 
 application = get_wsgi_application()
